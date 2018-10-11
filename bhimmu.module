@@ -1,0 +1,65 @@
+<?php
+
+/**
+ * @file
+ * Contains bhimmu.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Form\FormStateInterface;
+
+/**
+ * Implements hook_help().
+ */
+function bhimmu_help($route_name, RouteMatchInterface $route_match){
+  switch ($route_name) {
+    // Main module help for the bhimmu module.
+    case 'help.page.bhimmu':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Module is responsible to add some configuration at admin dashboard.') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function bhimmu_form_system_site_information_settings_alter(array &$form, FormStateInterface $form_state, $form_id){
+
+  // Read default Site API Key value.
+  $config = \Drupal::config('bhimmu.siteapi');
+
+  // Add additional field which holds the Site API Key value.
+  $form['site_information']['site_api_key'] = [
+    '#type' => 'textfield',
+    '#title' => 'Site API Key',
+    '#default_value' => $config->get('siteapikey'),
+  ];
+
+  // Change name of submit button.
+  $form['actions']['submit']['#value'] = 'Update Configuration';
+
+  // Custom submit function to save additional configuration.
+  $form['#submit'][] = '_bhimmu_site_api_submit';
+}
+
+/**
+ * Custom form submit function to save Site API Key value.
+ */
+function _bhimmu_site_api_submit(array $form, FormStateInterface $for_state){
+
+  // Access Config factory object.
+  $config = \Drupal::service('config.factory')->getEditable('bhimmu.siteapi');
+
+  // Set Site API Key value.
+  $config->set('siteapikey', $for_state->getValue('site_api_key'));
+
+  // Save config value.
+  $config->save();
+
+  // Set a status message after saving the value.
+  \Drupal::messenger()->addStatus('Site API Key has been saved with: ' . $for_state->getValue('site_api_key'));
+}

@@ -1,0 +1,7 @@
+name: 'Bhimmu'
+type: module
+description: 'Module is responsible to add some configuration at admin dashboard.'
+core: 8.x
+package: 'Custom'
+dependencies:
+  - drupal:serialization

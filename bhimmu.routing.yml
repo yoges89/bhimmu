@@ -1,0 +1,8 @@
+
+bhimmu.bhimmu_controller_index:
+  path: '/page_json/{api_key}/{node_id}'
+  defaults:
+    _controller: '\Drupal\bhimmu\Controller\BhimmuController::index'
+    _title: 'Node JSON Representation'
+  requirements:
+    _permission: 'access content'
